@@ -90,8 +90,6 @@ class Board:
             return 1
         if self.rows_of_n(4, -1):
             return -1
-        # if self._eval is not None:
-        #     return self._eval
         return (self.pssbl_rows_of_n(4, 1)-self.pssbl_rows_of_n(4, -1)) / 69
 
     @property

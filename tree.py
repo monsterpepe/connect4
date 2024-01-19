@@ -39,10 +39,10 @@ def build_tree(end_nodes, depth=4):
             p_moves = c.moves[:-1]
             parent = parents.get(p_moves)
             if parent:
-                if parent.player == 1 and c.eval > parent.eval:# max
+                if parent.player == 1 and c.eval > parent.eval: # max
                     parent.eval = c.eval
                     parent.best_child = c
-                elif parent.player == -1 and c.eval < parent.eval:
+                elif parent.player == -1 and c.eval < parent.eval: # min
                     parent.eval = c.eval
                     parent.best_child = c
             else:
