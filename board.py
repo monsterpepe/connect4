@@ -21,11 +21,11 @@ class Board:
             return copy.copy(self)
 
     def play(self, x, copy=False):
+        x = int(x)
         if copy:
             board = self.copy()
         else:
             board = self
-
         y = board.h - 1
         while True:
             if not board.board[y, x]:
@@ -36,6 +36,16 @@ class Board:
             if not y:
                 raise Exception('Invalid position')
             y -= 1
+        if copy:
+            return board
+
+    def play_moves(self, moves, copy=False):
+        if copy:
+            board = self.copy()
+        else:
+            board = self
+        for x in moves:
+            board.play(x)
         if copy:
             return board
 
@@ -109,5 +119,8 @@ if __name__ == '__main__':
     b = Board()
     b.play(3)
     b.play(5)
+    print(b)
+    print(b.eval)
+    b.play_moves([1, 2, 3])
     print(b)
     print(b.eval)
