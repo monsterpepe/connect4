@@ -55,12 +55,55 @@ def build_tree(end_nodes, depth=4):
     return children[0]
 
 
+def alphabeta(board, alpha=-1, beta=1, moves='', depth=4, player=None): # alpha: lowest score maximizing player is assured, beta: highest score min player is assured
+    if not player:
+        player = board.player
+    if len(moves) == depth: # end node
+        try:
+            board = board.play_moves(moves, copy=True)
+            return moves[-1], board.eval
+        except Exception as e:
+            print(e)
+            if player == 1:
+                return moves[-1], -1
+            else:
+                return moves[-1], 1
+    else:
+        move = None
+        best_eval = player * -1
+        for x in range(board.w):
+            _, eval_ = alphabeta(board, alpha, beta, moves+str(x), depth, player*-1)
+
+            if player == 1:
+                if eval_ > best_eval:
+                    best_eval = eval_
+                    move = x
+                if best_eval > beta:
+                    break
+                alpha = max(alpha, best_eval)
+            else:
+                if eval_ < best_eval:
+                    best_eval = eval_
+                    move = x
+                if best_eval < alpha:
+                    break
+                beta = min(beta, best_eval)
+
+        return move, best_eval
+
+
 if __name__ == '__main__':
+    import time
     from board import Board
     depth = 4
     b = Board()
+
+    s = time.time()
     end_nodes = get_end_nodes(b, depth)
     root = build_tree(end_nodes, depth)
+    move = int(root.best_child.moves[-1])
+    t = time.time() - s
+
     p = root
     for _ in range(depth):
         print(f'Player: {p.player}')
@@ -69,3 +112,10 @@ if __name__ == '__main__':
         print(f'Best: {c}')
         p = c
         print()
+    print(f'Time: {t}')
+    print()
+
+    s = time.time()
+    print(f'Alphabeta: {alphabeta(b, depth=depth)}')
+    t = time.time() - s
+    print(f'Time: {t}')
