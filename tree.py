@@ -63,17 +63,15 @@ def alphabeta(board, alpha=-1, beta=1, moves='', depth=4, player=None): # alpha:
             board = board.play_moves(moves, copy=True)
             return moves[-1], board.eval
         except Exception as e:
-            print(e)
-            if player == 1:
-                return moves[-1], -1
-            else:
-                return moves[-1], 1
+            pass
     else:
         move = None
         best_eval = player * -1
         for x in range(board.w):
-            _, eval_ = alphabeta(board, alpha, beta, moves+str(x), depth, player*-1)
-
+            r = alphabeta(board, alpha, beta, moves+str(x), depth, player*-1)
+            if not r:
+                continue
+            eval_ = r[1]
             if player == 1:
                 if eval_ > best_eval:
                     best_eval = eval_
@@ -88,14 +86,14 @@ def alphabeta(board, alpha=-1, beta=1, moves='', depth=4, player=None): # alpha:
                 if best_eval < alpha:
                     break
                 beta = min(beta, best_eval)
-
-        return move, best_eval
+        if move:
+            return move, best_eval
 
 
 if __name__ == '__main__':
     import time
     from board import Board
-    depth = 4
+    depth = 5
     b = Board()
 
     s = time.time()
@@ -109,13 +107,14 @@ if __name__ == '__main__':
         print(f'Player: {p.player}')
         print(p.children)
         c = p.best_child
-        print(f'Best: {c}')
+        print(f'Best: {c}s')
         p = c
         print()
-    print(f'Time: {t}')
+    print(f'Time: {round(t, 5)}')
     print()
 
     s = time.time()
-    print(f'Alphabeta: {alphabeta(b, depth=depth)}')
+    move, eval_ = alphabeta(b, depth=depth)
+    print(f'Alphabeta: {move, round(eval_, 5)}')
     t = time.time() - s
-    print(f'Time: {t}')
+    print(f'Time: {round(t, 5)}s')
